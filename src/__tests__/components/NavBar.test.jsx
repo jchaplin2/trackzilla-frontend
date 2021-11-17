@@ -4,7 +4,7 @@ import {
   within,
 } from "@testing-library/react";
 import {MemoryRouter}  from "react-router-dom";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/common/NavBar";
 
 describe("NavBar", () => {
   test("renders the nav menu.", () => {

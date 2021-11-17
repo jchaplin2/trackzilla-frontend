@@ -1,7 +1,8 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import NavBar from "./components/NavBar";
+import NavBar from "./components/common/NavBar";
+import PageNotFound from "./components/common/PageNotFound";
 import Home from "./components/Home";
 
 import ViewReleases from "./components/releases/ViewReleases";
@@ -43,6 +44,11 @@ function App() {
           <Route
             path="/viewreleases"
             element={<ViewReleases />}
+          />
+          <Route path="/404" element={<PageNotFound />} />
+          <Route
+            path="*"
+            element={<Navigate replace to="/404" />}
           />
         </Routes>
       </main>
