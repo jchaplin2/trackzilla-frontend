@@ -6,7 +6,7 @@ import {
 import {MemoryRouter}  from "react-router-dom";
 import NavBar from "../../components/NavBar";
 
-describe("", () => {
+describe("NavBar", () => {
   test("renders the nav menu.", () => {
     render(
         <MemoryRouter>
