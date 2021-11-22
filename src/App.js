@@ -6,7 +6,7 @@ import PageNotFound from "./components/common/PageNotFound";
 import Home from "./components/Home";
 
 import ViewReleases from "./components/releases/ViewReleases";
-import CreateReleases from "./components/releases/ViewReleases";
+import CreateReleases from "./components/releases/CreateReleases";
 
 import ViewTickets from "./components/tickets/ViewTickets";
 import CreateTickets from "./components/tickets/CreateTickets";
@@ -16,7 +16,7 @@ import ViewApplications from "./components/application/ViewApplications";
 
 function App() {
   return (
-    <div className="container">
+    <div id="app" className="container">
       <NavBar />
       <main role="main">
         <Routes>
