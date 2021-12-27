@@ -1,10 +1,13 @@
 import React from "react";
-import useFetch from "../../services/useFetch";
+import { useFetchWithRedux } from "../../services/useFetch";
+import * as actions from "../../redux/actions/releaseActions";
+import Spinner from "../common/Spinner";
 
-export default function Releases() {
-    const {error, loading, data} = useFetch("/trackzilla/releases");
+export default function ViewReleases() {
+    const { reducer } = useFetchWithRedux("/trackzilla/releases", actions, 'releaseReducer');
+    const { data, loading, error } = reducer;
 
-    if(loading) return <div>Loading ....</div>;
+    if(loading) return <Spinner/>;
     if(error) throw error;
 
     return(

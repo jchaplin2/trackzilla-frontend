@@ -1,10 +1,13 @@
 import React from "react";
-import useFetch from "../../services/useFetch";
+import { useFetchWithRedux } from "../../services/useFetch";
+import * as actions from "../../redux/actions/applicationActions";
+import Spinner from "../common/Spinner";
 
 export default function ViewApplications() {
-    const {error, loading, data} = useFetch("/trackzilla/applications");
+    const { reducer } = useFetchWithRedux("/trackzilla/applications", actions, 'applicationReducer');
+    const { data, loading, error } = reducer;
 
-    if(loading) return <div>Loading ....</div>;
+    if(loading) return <Spinner/>;
     if(error) throw error;
 
     return(

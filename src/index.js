@@ -1,19 +1,34 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 
+import App from "./App";
+import rootReducer from "./redux/reducers";
 import { BrowserRouter } from "react-router-dom";
 
-import "bootstrap/dist/css/bootstrap.min.css";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
 import "@popperjs/core/dist/cjs/popper.js";
 import "bootstrap/dist/js/bootstrap.min.js";
 
+const store = createStore(
+  rootReducer,
+  applyMiddleware(thunk)
+);
+
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ErrorBoundary>
+    </React.StrictMode>
+  </Provider>,
   document.getElementById("root")
 );

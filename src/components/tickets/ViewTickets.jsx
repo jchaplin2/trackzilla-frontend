@@ -1,10 +1,13 @@
 import React from "react";
-import useFetch from "../../services/useFetch";
+import { useFetchWithRedux } from "../../services/useFetch";
+import * as actions from "../../redux/actions/ticketActions";
+import Spinner from "../common/Spinner";
 
 export default function Tickets() {
-    const {error, loading, data} = useFetch("/trackzilla/tickets");
+    const { reducer } = useFetchWithRedux("/trackzilla/tickets", actions, 'ticketReducer');
+    const { data, loading, error } = reducer;
 
-    if(loading) return <div>Loading ....</div>;
+    if(loading) return <Spinner/>;
     if(error) throw error;
 
     return(

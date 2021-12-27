@@ -1,8 +1,42 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-const baseUrl = process.env.REACT_APP_API_BASE_URL;
+export function useFetchWithRedux(url, actions, selector) {
+  const {
+    fetchLoading,
+    fetchError,
+    fetchSuccess,
+  } = actions;
 
-export default function useFetch(url) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function init() {
+      fetchLoading(true, dispatch);
+      const baseUrl = process.env.REACT_APP_BASE_API_URL;
+      await fetch(baseUrl + url)
+        .then((response) => response.json())
+        .then((data) => {
+          fetchSuccess(data, dispatch);
+        })
+        .catch((error) => {
+          fetchError(error, dispatch);
+        })
+        .finally(() => {
+          fetchLoading(false, dispatch);
+        });
+    }
+
+    init();
+  }, [url, dispatch]);
+
+  const reducer = useSelector((state) => state[selector]);
+
+  return { reducer };
+}
+
+export function useFetch(url) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
