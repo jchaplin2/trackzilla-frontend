@@ -2,6 +2,7 @@ import React from "react";
 import { useFetchWithRedux } from "../../services/useFetch";
 import * as actions from "../../redux/actions/releaseActions";
 import Spinner from "../common/Spinner";
+import { Link } from "react-router-dom";
 
 export default function ViewReleases() {
     const { reducer } = useFetchWithRedux("/trackzilla/releases", actions, 'releaseReducer');
@@ -25,9 +26,11 @@ export default function ViewReleases() {
 
             {data.map((item, i) => {
                 return (<tr key={i}>
-                    <td>{item.id}</td>
+                    <td> 
+                        <Link role="link" to={`/editrelease/${i}`} >{item.id + 1}</Link>
+                    </td>
                     <td>{item.releaseDate}</td>
-                    <td>{item.description}</td>
+                    <td>{item.releaseDesc}</td>
                 </tr>);
             })}
 

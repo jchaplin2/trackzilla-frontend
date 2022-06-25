@@ -1,16 +1,29 @@
 import {render, screen, within} from '@testing-library/react';
 import React from 'react';
 import {MemoryRouter} from 'react-router-dom';
+import { Provider } from "react-redux";
 import '@testing-library/jest-dom'
 import App from "../../../App";
+
+import { createStore, applyMiddleware } from "redux";
+import rootReducer from "../../../redux/reducers";
+import thunk from "redux-thunk";
 
 describe("ViewReleases", () => {
 
     test('it navigates to view releases when clicked', () => {
+
+        const store = createStore(
+            rootReducer,
+            applyMiddleware(thunk)
+        );
+
         render(
-            <MemoryRouter>
-                <App/>
-            </MemoryRouter>
+            <Provider store={store}>
+                <MemoryRouter>
+                    <App/>
+                </MemoryRouter>
+            </Provider>
         );
 
         const menuBar = screen.getByRole("menubar");

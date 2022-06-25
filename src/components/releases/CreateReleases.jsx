@@ -1,7 +1,11 @@
 import React from "react";
+import UpsertReleaseForm from "./UpsertReleaseForm";
 
-export default function Releases() {
+export default function CreateReleases(){
     return(
-        <div>Create Releases</div>
-    );
+        <div>
+            <div>Create Releases</div>
+            <UpsertReleaseForm />
+        </div>
+    );    
 }

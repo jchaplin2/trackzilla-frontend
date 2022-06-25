@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
-export function useFetchWithRedux(url, actions, selector) {
+export function useFetchWithRedux(
+  url,
+  actions,
+  selector,
+  initParams = {}
+) {
   const {
     fetchLoading,
     fetchError,
@@ -15,7 +20,7 @@ export function useFetchWithRedux(url, actions, selector) {
     async function init() {
       fetchLoading(true, dispatch);
       const baseUrl = process.env.REACT_APP_BASE_API_URL;
-      await fetch(baseUrl + url)
+      await fetch(baseUrl + url, initParams)
         .then((response) => response.json())
         .then((data) => {
           fetchSuccess(data, dispatch);
