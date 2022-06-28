@@ -2,6 +2,9 @@ import {
   FETCH_RELEASES_LOADING,
   FETCH_RELEASES_SUCCESS,
   FETCH_RELEASES_FAILURE,
+  ADD_RELEASE,
+  CHANGE_RELEASE,
+  DELETE_RELEASE,
 } from "../actions/releaseActions";
 
 export default function releaseReducer(
@@ -15,6 +18,9 @@ export default function releaseReducer(
         loading: action.loading,
       };
     case FETCH_RELEASES_SUCCESS:
+    case CHANGE_RELEASE:
+    case ADD_RELEASE:
+    case DELETE_RELEASE:
       return {
         ...state,
         data: action.data,

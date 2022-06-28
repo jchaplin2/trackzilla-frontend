@@ -1,7 +1,8 @@
 import { handleResponse, handleError } from "./apiUtils";
 
 const baseUrl =
-  "http://localhost:8080/trackzilla/releases/";
+  process.env.REACT_APP_BASE_API_URL +
+  "/trackzilla/releases";
 
 export function saveRelease(release) {
   return fetch(baseUrl + (release.id || ""), {

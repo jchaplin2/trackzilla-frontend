@@ -5,6 +5,10 @@ export const FETCH_RELEASES_SUCCESS =
 export const FETCH_RELEASES_FAILURE =
   "FETCH_RELEASES_FAILURE";
 
+export const ADD_RELEASE = "ADD_RELEASE";
+export const CHANGE_RELEASE = "CHANGE_RELEASE";
+export const DELETE_RELEASE = "DELETE_RELEASE";
+
 export function fetchLoading(loading, dispatch) {
   dispatch({ type: FETCH_RELEASES_LOADING, loading });
 }
@@ -18,4 +22,16 @@ export function fetchError(error, dispatch) {
     type: FETCH_RELEASES_FAILURE,
     error,
   });
+}
+
+export function updateRelease(data, dispatch) {
+  dispatch({ type: CHANGE_RELEASE, data });
+}
+
+export function addRelease(data, dispatch) {
+  dispatch({ type: ADD_RELEASE, data });
+}
+
+export function deleteRelease(data, dispatch) {
+  dispatch({ type: DELETE_RELEASE, data });
 }

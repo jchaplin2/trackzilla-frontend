@@ -3,14 +3,14 @@ import { useState } from "react";
 import TextInput from "../common/TextInput";
 import {saveRelease} from "../../services/releaseService";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../common/Spinner";
 
 export default function UpsertReleaseForm(props) {
 
     const releaseDesc = props.data.releaseDesc ? props.data.releaseDesc : "";
     const releaseDate = props.data.releaseDate ? props.data.releaseDate : new Date().toLocaleDateString('en-US', {month: "2-digit", day:"2-digit", year:"numeric"});
     const [errors, setErrors] = useState({});
-    const id = props.data.id ? props.data.id : 0;
-
+    const id = Number(props.data.id) >= 0  ? Number(props.data.id): "";
     const [release, setRelease] = useState({
         id: id,
         releaseDesc: releaseDesc,
@@ -27,6 +27,10 @@ export default function UpsertReleaseForm(props) {
     const formIsValid = (release) => {
         const {releaseDesc, releaseDate} = release;
         const errors = {};
+
+        var fourDigitYearPattern = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/  ;
+
+        if(!fourDigitYearPattern.test(releaseDate))errors.releaseDate = "Date must be in the pattern MM-DD-YYYY.";
 
         if (!releaseDesc) errors.releaseDesc = "Description is required.";
         if (!releaseDate) errors.releaseDate = "Date is required.";
