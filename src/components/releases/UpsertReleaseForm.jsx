@@ -8,7 +8,8 @@ import Spinner from "../common/Spinner";
 export default function UpsertReleaseForm(props) {
 
     const releaseDesc = props.data.releaseDesc ? props.data.releaseDesc : "";
-    const releaseDate = props.data.releaseDate ? props.data.releaseDate : new Date().toLocaleDateString('en-US', {month: "2-digit", day:"2-digit", year:"numeric"});
+    const dateFormatter = Intl.DateTimeFormat('sv-SE');
+    const releaseDate = props.data.releaseDate ? props.data.releaseDate : dateFormatter.format(new Date());
     const [errors, setErrors] = useState({});
     const id = Number(props.data.id) >= 0  ? Number(props.data.id): "";
     const [release, setRelease] = useState({
@@ -30,7 +31,7 @@ export default function UpsertReleaseForm(props) {
 
         var fourDigitYearPattern = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/  ;
 
-        if(!fourDigitYearPattern.test(releaseDate))errors.releaseDate = "Date must be in the pattern MM-DD-YYYY.";
+        if(!fourDigitYearPattern.test(releaseDate))errors.releaseDate = "Date must be in the pattern YYYY-MM-DD.";
 
         if (!releaseDesc) errors.releaseDesc = "Description is required.";
         if (!releaseDate) errors.releaseDate = "Date is required.";

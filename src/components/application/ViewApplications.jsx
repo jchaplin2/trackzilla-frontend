@@ -2,6 +2,7 @@ import React from "react";
 import { useFetchWithRedux } from "../../services/useFetch";
 import * as actions from "../../redux/actions/applicationActions";
 import Spinner from "../common/Spinner";
+import { Link } from "react-router-dom";
 
 export default function ViewApplications() {
     const { reducer } = useFetchWithRedux("/trackzilla/applications", actions, 'applicationReducer');
@@ -26,10 +27,12 @@ export default function ViewApplications() {
 
             {data.map((item, i) => {
                 return (<tr key={i}>
-                    <td>{item.id}</td>
-                    <td> {item.name} </td>
-                    <td> {item.description} </td>
-                    <td> {item.owner}</td>
+                    <td> 
+                        <Link role="link" to={`/editapplication/${i}`} >{item.id + 1}</Link>
+                    </td>
+                    <td> {item.applicationName} </td>
+                    <td> {item.applicationDesc} </td>
+                    <td> {item.applicationOwner}</td>
                 </tr>);
             })}
 

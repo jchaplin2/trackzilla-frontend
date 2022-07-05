@@ -12,7 +12,8 @@ import CreateReleases from "./components/releases/CreateReleases";
 import ViewTickets from "./components/tickets/ViewTickets";
 import CreateTickets from "./components/tickets/CreateTickets";
 
-import CreateApplication from "./components/application/CreateApplication";
+import CreateApplications from "./components/application/CreateApplications";
+import EditApplications from "./components/application/EditApplications";
 import ViewApplications from "./components/application/ViewApplications";
 
 function App() {
@@ -24,7 +25,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/createapplication/"
-            element={<CreateApplication />}
+            element={<CreateApplications />}
+          />
+          <Route
+            path="/editapplication/:id"
+            element={<EditApplications />}
           />
           <Route
             path="/viewapplications/"
