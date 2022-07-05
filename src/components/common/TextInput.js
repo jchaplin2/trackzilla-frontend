@@ -19,7 +19,6 @@ const TextInput = ({
       <div className="field">
         <input
           type="text"
-          role="textbox"
           name={name}
           id={name}
           className="form-control"

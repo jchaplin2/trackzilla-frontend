@@ -9,7 +9,7 @@ export default function SubMenu({menuName, links}) {
           </a>
           <ul className="dropdown-menu" aria-labelledby="navbarScrollingDropdown" role="menu">
           {links.map((link, index, arr) => {
-            let divider = index < arr.length - 1 ? <li key={index} role="listitem"><hr className="dropdown-divider" /></li> : "";
+            let divider = index < arr.length - 1 ? <li key={index} ><hr className="dropdown-divider" /></li> : "";
 
             return (
                 <React.Fragment key={index}>

@@ -3,7 +3,6 @@ import { useState } from "react";
 import TextInput from "../common/TextInput";
 import {saveApplication} from "../../services/applicationService";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../common/Spinner";
 
 export default function UpsertApplicationForm(props) {
 
@@ -51,7 +50,7 @@ export default function UpsertApplicationForm(props) {
 
         setSaving(true);
         try {
-            saveApplication(application);
+            saveApplication(application, navigate);
         } catch(error) {
             setErrors({ onSave: error.message });
         } finally {
@@ -64,8 +63,6 @@ export default function UpsertApplicationForm(props) {
             applicationDesc : "",
             applicationOwner : ""
         });
-
-        navigate("/viewapplications");
     };
 
     return (

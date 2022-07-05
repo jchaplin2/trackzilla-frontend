@@ -3,7 +3,6 @@ import { useState } from "react";
 import TextInput from "../common/TextInput";
 import {saveRelease} from "../../services/releaseService";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../common/Spinner";
 
 export default function UpsertReleaseForm(props) {
 
@@ -50,7 +49,7 @@ export default function UpsertReleaseForm(props) {
 
         setSaving(true);
         try {
-            saveRelease(release);
+            saveRelease(release, navigate);
         } catch(error) {
             setErrors({ onSave: error.message });
         } finally {
@@ -62,8 +61,6 @@ export default function UpsertReleaseForm(props) {
             releaseDesc: "",
             releaseDate: ""
         });
-
-        navigate("/viewreleases");
     };
 
     return (
