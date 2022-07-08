@@ -1,8 +1,9 @@
 import React from "react";
 import { useState } from "react";
 import TextInput from "../common/TextInput";
-import {saveRelease} from "../../services/releaseService";
-import { useNavigate } from "react-router-dom";
+
+export const DESC_REQUIRED_MESSAGE = "Description is required."
+export const DATE_REQUIRED_MESSAGE = "Date is required.";
 
 export default function UpsertReleaseForm(props) {
 
@@ -17,7 +18,6 @@ export default function UpsertReleaseForm(props) {
         releaseDate: releaseDate
     });
     const [saving, setSaving] = useState(false);
-    const navigate = useNavigate();
 
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -32,8 +32,8 @@ export default function UpsertReleaseForm(props) {
 
         if(!fourDigitYearPattern.test(releaseDate))errors.releaseDate = "Date must be in the pattern YYYY-MM-DD.";
 
-        if (!releaseDesc) errors.releaseDesc = "Description is required.";
-        if (!releaseDate) errors.releaseDate = "Date is required.";
+        if (!releaseDesc) errors.releaseDesc = DESC_REQUIRED_MESSAGE;
+        if (!releaseDate) errors.releaseDate = DATE_REQUIRED_MESSAGE;
 
         setErrors(errors);
 
@@ -49,7 +49,7 @@ export default function UpsertReleaseForm(props) {
 
         setSaving(true);
         try {
-            saveRelease(release, navigate);
+            props.onSubmit(release);
         } catch(error) {
             setErrors({ onSave: error.message });
         } finally {

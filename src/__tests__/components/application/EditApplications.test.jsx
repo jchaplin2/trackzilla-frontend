@@ -12,11 +12,19 @@ import userEvent from '@testing-library/user-event';
 import EditApplications from '../../../components/application/EditApplications';
 import UpsertApplicationForm from '../../../components/application/UpsertApplicationForm';
 
+import {NAME_REQUIRED_MESSAGE, OWNER_REQUIRED_MESSAGE, DESC_REQUIRED_MESSAGE} from '../../../components/application/UpsertApplicationForm';
+import {FETCH_RELEASES_LOADING, FETCH_RELEASES_SUCCESS} from "../../../redux/actions/releaseActions"
+import { act } from 'react-dom/test-utils';
+
 describe("EditApplications component", () => {
 
     let applicationForm;
+    let store;
 
     const unmockedFetch = global.fetch;
+
+    //NOTE: setloading to true, then false + api success action. 
+    const NUMBER_OF_EXPECTED_DISPATCH_CALLS = 3;
 
     const data = [
         {
@@ -42,11 +50,13 @@ describe("EditApplications component", () => {
     beforeEach(() => {
         const mockStore = configureMockStore([]);
 
-        const store = mockStore({
+        store = mockStore({
             applicationReducer: {
                 data : data
             }
         });
+
+        store.dispatch = jest.fn();
 
         render(
             <Provider store={store}>
@@ -93,7 +103,7 @@ describe("EditApplications component", () => {
 
     });
 
-    test('to update the correct form values',  async () => {
+    test('to update the correct form values and invoke the correct actions.',  async () => {
         const appName = screen.getByRole("textbox", {
             name: /App Name/i,
         });
@@ -123,6 +133,30 @@ describe("EditApplications component", () => {
             "applicationOwner": "my owner"
         });
 
+        const saveButton = screen.getByRole("button", {
+            name: /Save/i,
+        });
+
+        act(() => {
+            userEvent.click(saveButton);
+        });
+
+        await waitFor(() => {
+            expect(store.dispatch).toHaveBeenCalledTimes(NUMBER_OF_EXPECTED_DISPATCH_CALLS);
+            expect(store.dispatch).toHaveBeenNthCalledWith(1, { 
+                type: FETCH_RELEASES_LOADING, 
+                loading:true 
+            });
+            expect(store.dispatch).toHaveBeenNthCalledWith(2, {
+                type: FETCH_RELEASES_SUCCESS,
+                data : data
+            });
+            expect(store.dispatch).toHaveBeenNthCalledWith(3, { 
+                type: FETCH_RELEASES_LOADING, 
+                loading:false 
+            });
+        });
+
     });
 
     test('displays error messages when form is blank', () => {
@@ -147,8 +181,8 @@ describe("EditApplications component", () => {
 
         userEvent.click(saveButton);
 
-        expect(screen.getByText("Name is required.")).toBeInTheDocument();
-        expect(screen.getByText("Desc is required.")).toBeInTheDocument();
-        expect(screen.getByText("Owner is required.")).toBeInTheDocument();
+        expect(screen.getByText(NAME_REQUIRED_MESSAGE)).toBeInTheDocument();
+        expect(screen.getByText(DESC_REQUIRED_MESSAGE)).toBeInTheDocument();
+        expect(screen.getByText(OWNER_REQUIRED_MESSAGE)).toBeInTheDocument();
     });
 });

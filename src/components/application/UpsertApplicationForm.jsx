@@ -1,8 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import TextInput from "../common/TextInput";
-import {saveApplication} from "../../services/applicationService";
-import { useNavigate } from "react-router-dom";
+
+export const NAME_REQUIRED_MESSAGE = "Name is required."
+export const DESC_REQUIRED_MESSAGE = "Desc is required.";
+export const OWNER_REQUIRED_MESSAGE = "Owner is required.";
 
 export default function UpsertApplicationForm(props) {
 
@@ -21,7 +23,6 @@ export default function UpsertApplicationForm(props) {
     });
 
     const [saving, setSaving] = useState(false);
-    const navigate = useNavigate();
 
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -32,9 +33,9 @@ export default function UpsertApplicationForm(props) {
         const {applicationName, applicationDesc, applicationOwner} = application;
         const errors = {};
 
-        if (!applicationName) errors.applicationName = "Name is required.";
-        if (!applicationDesc) errors.applicationDesc = "Desc is required.";
-        if (!applicationOwner) errors.applicationOwner = "Owner is required.";
+        if (!applicationName) errors.applicationName = NAME_REQUIRED_MESSAGE;
+        if (!applicationDesc) errors.applicationDesc = DESC_REQUIRED_MESSAGE;
+        if (!applicationOwner) errors.applicationOwner = OWNER_REQUIRED_MESSAGE;
 
         setErrors(errors);
 
@@ -50,7 +51,7 @@ export default function UpsertApplicationForm(props) {
 
         setSaving(true);
         try {
-            saveApplication(application, navigate);
+            props.onSubmit(application);
         } catch(error) {
             setErrors({ onSave: error.message });
         } finally {

@@ -1,9 +1,7 @@
-import {render, screen, within, waitFor} from '@testing-library/react';
-import {renderHook} from '@testing-library/react-hooks';
+import {render, screen, within, waitFor, wait} from '@testing-library/react';
 import React from 'react';
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import '@testing-library/jest-dom'
-import user from '@testing-library/user-event';
 import configureMockStore from "redux-mock-store";
 
 import { createMemoryHistory } from 'history';
@@ -13,11 +11,19 @@ import EditReleases from '../../../components/releases/EditReleases';
 import UpsertReleaseForm from '../../../components/releases/UpsertReleaseForm';
 import userEvent from '@testing-library/user-event';
 
+import {DESC_REQUIRED_MESSAGE, DATE_REQUIRED_MESSAGE} from '../../../components/releases/UpsertReleaseForm';
+import {FETCH_RELEASES_LOADING, FETCH_RELEASES_SUCCESS} from "../../../redux/actions/releaseActions"
+import { act } from 'react-dom/test-utils';
+
 describe("EditReleases component", () => {
 
     let releaseForm;
+    let store;
 
     const unmockedFetch = global.fetch;
+
+    //NOTE: setloading to true, then false + api success action. 
+    const NUMBER_OF_EXPECTED_DISPATCH_CALLS = 3;
 
     const data = [
         {
@@ -35,11 +41,17 @@ describe("EditReleases component", () => {
     beforeEach(() => {
         const mockStore = configureMockStore([]);
 
-        const store = mockStore({
+        store = mockStore({
             releaseReducer: {
                 data : data
             }
         });
+
+        store.dispatch = jest.fn();
+
+        const onSubmit = (release) => {
+            saveRelease(release, navigate, jest.mock, jest.mock);
+        }
 
         render(
             <Provider store={store}>
@@ -47,7 +59,7 @@ describe("EditReleases component", () => {
                     <Routes>
                         <Route path='/editrelease/:id'>
                             <EditReleases>
-                                <UpsertReleaseForm />
+                                <UpsertReleaseForm onSubmit={onSubmit} />
                             </EditReleases>
                         </Route>
                     </Routes>
@@ -84,7 +96,7 @@ describe("EditReleases component", () => {
 
     });
 
-    test('to update the correct form values',  async () => {
+    test('to update the correct form values and invoke the correct actions.',  async () => {
         const releaseDate = screen.getByRole("textbox", {
             name: /Release Date/i,
         });
@@ -99,11 +111,36 @@ describe("EditReleases component", () => {
         userEvent.clear(releaseDesc);
         userEvent.type(releaseDesc, "my totally awesome release!");
 
+        //TODO, define local data object??
+
         expect(releaseForm).toHaveFormValues({
             "releaseDate": "2022-06-20",
             "releaseDesc": "my totally awesome release!"
         });
 
+        const saveButton = screen.getByRole("button", {
+            name: /Save/i,
+        });
+
+        act(() => {
+            userEvent.click(saveButton);
+        });
+
+        await waitFor(() => {
+            expect(store.dispatch).toHaveBeenCalledTimes(NUMBER_OF_EXPECTED_DISPATCH_CALLS);
+            expect(store.dispatch).toHaveBeenNthCalledWith(1, { 
+                type: FETCH_RELEASES_LOADING, 
+                loading:true 
+            });
+            expect(store.dispatch).toHaveBeenNthCalledWith(2, {
+                type: FETCH_RELEASES_SUCCESS,
+                data : data
+            });
+            expect(store.dispatch).toHaveBeenNthCalledWith(3, { 
+                type: FETCH_RELEASES_LOADING, 
+                loading:false 
+            });
+        });
     });
 
     test('displays error messages when form is blank', () => {
@@ -123,7 +160,7 @@ describe("EditReleases component", () => {
 
         userEvent.click(saveButton);
 
-        expect(screen.getByText("Description is required.")).toBeInTheDocument();
-        expect(screen.getByText("Date is required.")).toBeInTheDocument();
+        expect(screen.getByText(DESC_REQUIRED_MESSAGE)).toBeInTheDocument();
+        expect(screen.getByText(DATE_REQUIRED_MESSAGE)).toBeInTheDocument();
     });
 });
