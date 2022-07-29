@@ -9,6 +9,12 @@ import { createStore, applyMiddleware } from "redux";
 import rootReducer from "../../../redux/reducers";
 import thunk from "redux-thunk";
 
+/**
+ * View Applications Tests
+ * 
+ * @group unit
+ */
+
 describe("ViewReleases", () => {
 
     test('it navigates to view releases when clicked', () => {

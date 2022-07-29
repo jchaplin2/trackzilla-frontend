@@ -8,8 +8,11 @@ export function saveRelease(
   handleResponse,
   handleError
 ) {
-  return fetch(baseUrl + (release.id || ""), {
-    method: release.id ? "PUT" : "POST", // POST for create, PUT to update when id already exists.
+  let releaseId = Number.isInteger(parseInt(release.id))
+    ? parseInt(release.id)
+    : "";
+  return fetch(baseUrl + releaseId, {
+    method: releaseId >= 0 ? "PUT" : "POST", // POST for create, PUT to update when id already exists.
     headers: { "content-type": "application/json" },
     body: JSON.stringify(release),
   })

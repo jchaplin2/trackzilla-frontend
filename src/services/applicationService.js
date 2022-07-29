@@ -8,8 +8,14 @@ export function saveApplication(
   handleResponse,
   handleError
 ) {
-  return fetch(baseUrl + (application.id || ""), {
-    method: application.id ? "PUT" : "POST", // POST for create, PUT to update when id already exists.
+  let applicationId =
+    Number.isInteger(parseInt(application.id))
+      ? parseInt(application.id)
+      : "";
+  return fetch(baseUrl + applicationId, {
+    method: Number.isInteger(applicationId)
+      ? "PUT"
+      : "POST", // POST for create, PUT to update when id already exists.
     headers: { "content-type": "application/json" },
     body: JSON.stringify(application),
   })
