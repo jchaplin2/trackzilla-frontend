@@ -35,15 +35,8 @@ describe("EditApplications component", () => {
 
     let applicationForm, container;
 
-    // const unmockedFetch = global.fetch;
-
-    //NOTE: setloading to true, then false + api success action. 
-    const NUMBER_OF_EXPECTED_DISPATCH_CALLS = 3;
-
     beforeEach(() => {
-
         window.history.pushState({}, "/editapplication/0", "/editapplication/0");
-
         const store = createStore(
             rootReducer,
             applyMiddleware(thunk)
@@ -69,8 +62,12 @@ describe("EditApplications component", () => {
 
     test('displays the correct header and inputs have correct labels/values.', async () => {
 
+        const loadingSpinner = container.container.querySelector(".lds-dual-ring");
+        expect(loadingSpinner).toBeInTheDocument();
+
         await waitFor(() => {
             expect(document.body.textContent).toContain("Edit Application");
+
             expect(screen.getByLabelText("App Name")).toBeInTheDocument();
             expect(screen.getByLabelText("App Desc")).toBeInTheDocument();
             expect(screen.getByLabelText("App Owner")).toBeInTheDocument();
@@ -89,10 +86,9 @@ describe("EditApplications component", () => {
 
     });
 
-    test.skip('to update the correct form values and invoke the correct actions.', async () => {
+    test('to update the correct form values and invoke the correct actions.', async () => {
 
             const loadingSpinner = container.container.querySelector(".lds-dual-ring");
-
             expect(loadingSpinner).toBeInTheDocument();
 
             let appName, appDesc, appOwner;
@@ -133,25 +129,9 @@ describe("EditApplications component", () => {
                 userEvent.click(saveButton);
             });
 
-        // console.log(screen.getByText("Saving...").innerHTML);
-        // console.log(container.container.querySelector("button").textContent);
-
-        // await waitFor(() => {
-        //     expect(store.dispatch).toHaveBeenCalledTimes(NUMBER_OF_EXPECTED_DISPATCH_CALLS);
-        //     expect(store.dispatch).toHaveBeenNthCalledWith(1, { 
-        //         type: FETCH_APPLICATIONS_LOADING, 
-        //         loading:true 
-        //     });
-        //     expect(store.dispatch).toHaveBeenNthCalledWith(2, {
-        //         type: FETCH_APPLICATIONS_SUCCESS,
-        //         data : data
-        //     });
-        //     expect(store.dispatch).toHaveBeenNthCalledWith(3, { 
-        //         type: FETCH_APPLICATIONS_LOADING, 
-        //         loading:false 
-        //     });
-        // });
-
+            await waitFor(() => {
+                expect(screen.getByText("Saving...")).toBeTruthy();
+            });
     });
 
     test('displays error messages when form is blank', async () => {

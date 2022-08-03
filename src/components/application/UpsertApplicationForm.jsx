@@ -2,6 +2,11 @@ import React from "react";
 import { useState } from "react";
 import TextInput from "../common/TextInput";
 
+import { useNavigate } from "react-router-dom";
+
+import { handleResponse, handleError } from "../../services/apiUtils";
+import {saveApplication} from "../../services/applicationService";
+
 export const NAME_REQUIRED_MESSAGE = "Name is required."
 export const DESC_REQUIRED_MESSAGE = "Desc is required.";
 export const OWNER_REQUIRED_MESSAGE = "Owner is required.";
@@ -22,6 +27,7 @@ export default function UpsertApplicationForm(props) {
         applicationOwner : applicationOwner
     });
 
+    const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
 
     const handleInputChange = (event) => {
@@ -51,11 +57,10 @@ export default function UpsertApplicationForm(props) {
 
         setSaving(true);
         try {
-            props.onSubmit(application);
+            saveApplication(application, navigate, handleResponse, handleError);
         } catch(error) {
-            setErrors({ onSave: error.message });
-        } finally {
             setSaving(false);
+            setErrors({ onSave: error.message });
         }
 
         setApplication({

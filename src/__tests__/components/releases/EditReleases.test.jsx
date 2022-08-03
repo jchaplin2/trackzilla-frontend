@@ -6,6 +6,10 @@ import configureMockStore from "redux-mock-store";
 
 import { createMemoryHistory } from 'history';
 
+import { createStore, applyMiddleware } from "redux";
+import rootReducer from "../../../redux/reducers";
+import thunk from "redux-thunk";
+
 import { Provider } from "react-redux";
 import EditReleases from '../../../components/releases/EditReleases';
 import UpsertReleaseForm from '../../../components/releases/UpsertReleaseForm';
@@ -14,6 +18,7 @@ import userEvent from '@testing-library/user-event';
 import {DESC_REQUIRED_MESSAGE, DATE_REQUIRED_MESSAGE} from '../../../components/releases/UpsertReleaseForm';
 import {FETCH_RELEASES_LOADING, FETCH_RELEASES_SUCCESS} from "../../../redux/actions/releaseActions"
 import { act } from 'react-dom/test-utils';
+import ViewReleases from '../../../components/releases/ViewReleases';
 
 /**
  * Edit Releases Tests
@@ -23,43 +28,16 @@ import { act } from 'react-dom/test-utils';
 
 describe("EditReleases component", () => {
 
-    let releaseForm;
-    let store;
-
-    const unmockedFetch = global.fetch;
-
-    //NOTE: setloading to true, then false + api success action. 
-    const NUMBER_OF_EXPECTED_DISPATCH_CALLS = 3;
-
-    const data = [
-        {
-            "id": 0,
-            "releaseDate": "2029-12-14",
-            "releaseDesc": "Q4 Release with some year end patches."
-        },
-        {
-            "id": 1,
-            "releaseDate": "2030-02-14",
-            "releaseDesc": "Q1 Release Containing High Priority Bugs."
-        }
-    ];
+    let releaseForm, container;
 
     beforeEach(() => {
-        const mockStore = configureMockStore([]);
+        window.history.pushState({}, "/editrelease/1", "/editrelease/1");
+        const store = createStore(
+            rootReducer,
+            applyMiddleware(thunk)
+        );
 
-        store = mockStore({
-            releaseReducer: {
-                data : data
-            }
-        });
-
-        store.dispatch = jest.fn();
-
-        const onSubmit = (release) => {
-            saveRelease(release, navigate, jest.mock, jest.mock);
-        }
-
-        render(
+        container = render(
             <Provider store={store}>
                 <MemoryRouter initialEntries={["/editrelease/1"]}>
                     <Routes>
@@ -67,29 +45,43 @@ describe("EditReleases component", () => {
                             path="/editrelease/:id"
                             element={<EditReleases />}
                         />
+                        <Route
+                            path="/viewreleases/"
+                            element={<ViewReleases />}
+                        />
                     </Routes>
                 </MemoryRouter>
             </Provider>
         );
 
-        releaseForm = screen.getByRole("form", {
-            name: /upsertForm/i
-        });
     });
 
-    test('displays the correct header and inputs have correct labels/values.', () => {
-        expect(document.body.textContent).toContain("Edit Releases");
-        expect(screen.getByLabelText("Release Date")).toBeInTheDocument();
-        expect(screen.getByLabelText("Release Description")).toBeInTheDocument();
+    test('displays the correct header and inputs have correct labels/values.', async () => {
 
-        expect(releaseForm).toHaveFormValues({
-            "releaseDate": "2030-02-14",
-            "releaseDesc": "Q1 Release Containing High Priority Bugs."
+        const loadingSpinner = container.container.querySelector(".lds-dual-ring");
+        expect(loadingSpinner).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(document.body.textContent).toContain("Edit Releases");
+            expect(screen.getByLabelText("Release Date")).toBeInTheDocument();
+            expect(screen.getByLabelText("Release Description")).toBeInTheDocument();
+
+            releaseForm = screen.getByRole("form", {
+                name: /upsertForm/i
+            });
+
+            expect(releaseForm).toHaveFormValues({
+                "releaseDate": "2030-02-14",
+                "releaseDesc": "Q1 Release Containing High Priority Bugs."
+            });
         });
 
     });
 
     test('to update the correct form values and invoke the correct actions.',  async () => {
+        const loadingSpinner = container.container.querySelector(".lds-dual-ring");
+        expect(loadingSpinner).toBeInTheDocument();
+
         let releaseDate;
         let releaseDesc;
 
@@ -110,11 +102,9 @@ describe("EditReleases component", () => {
             userEvent.type(releaseDesc, "my totally awesome release!");
         });
 
-        //TODO, define local data object??
-
-        expect(releaseForm).toHaveFormValues({
-            "releaseDate": "2022-06-20",
-            "releaseDesc": "my totally awesome release!"
+        await waitFor(() => {
+            expect(screen.getByDisplayValue("2022-06-20")).toBeTruthy();
+            expect(screen.getByDisplayValue("my totally awesome release!")).toBeTruthy();
         });
 
         const saveButton = screen.getByRole("button", {
@@ -125,41 +115,34 @@ describe("EditReleases component", () => {
             userEvent.click(saveButton);
         });
 
-        // await waitFor(() => {
-        //     expect(store.dispatch).toHaveBeenCalledTimes(NUMBER_OF_EXPECTED_DISPATCH_CALLS);
-        //     expect(store.dispatch).toHaveBeenNthCalledWith(1, { 
-        //         type: FETCH_RELEASES_LOADING, 
-        //         loading:true 
-        //     });
-        //     expect(store.dispatch).toHaveBeenNthCalledWith(2, {
-        //         type: FETCH_RELEASES_SUCCESS,
-        //         data : data
-        //     });
-        //     expect(store.dispatch).toHaveBeenNthCalledWith(3, { 
-        //         type: FETCH_RELEASES_LOADING, 
-        //         loading:false 
-        //     });
-        // });
+        await waitFor(() => {
+            expect(screen.getByText("Saving...")).toBeTruthy();
+        });
     });
 
-    test('displays error messages when form is blank', () => {
-        const releaseDate = screen.getByRole("textbox", {
-            name: /Release Date/i,
+    test('displays error messages when form is blank', async () => {
+        const loadingSpinner = container.container.querySelector(".lds-dual-ring");
+        expect(loadingSpinner).toBeInTheDocument();
+
+        await waitFor(() => {
+            const releaseDate = screen.getByRole("textbox", {
+                name: /Release Date/i,
+            });
+            userEvent.clear(releaseDate);
+
+            const releaseDesc = screen.getByRole("textbox", {
+                name: /Release Description/i,
+            });
+            userEvent.clear(releaseDesc);
+
+            const saveButton = screen.getByRole("button", {
+                name: /Save/i,
+            });
+
+            userEvent.click(saveButton);
+
+            expect(screen.getByText(DESC_REQUIRED_MESSAGE)).toBeInTheDocument();
+            expect(screen.getByText(DATE_REQUIRED_MESSAGE)).toBeInTheDocument();
         });
-        userEvent.clear(releaseDate);
-
-        const releaseDesc = screen.getByRole("textbox", {
-            name: /Release Description/i,
-        });
-        userEvent.clear(releaseDesc);
-
-        const saveButton = screen.getByRole("button", {
-            name: /Save/i,
-        });
-
-        userEvent.click(saveButton);
-
-        expect(screen.getByText(DESC_REQUIRED_MESSAGE)).toBeInTheDocument();
-        expect(screen.getByText(DATE_REQUIRED_MESSAGE)).toBeInTheDocument();
     });
 });

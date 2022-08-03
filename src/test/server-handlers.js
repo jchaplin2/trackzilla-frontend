@@ -48,7 +48,6 @@ const handlers = [
   rest.get(
     `${apiUrl}/trackzilla/applications`,
     async (req, res, ctx) => {
-      ctx.delay(3000);
       return res(ctx.json(applicationData));
     }
   ),
@@ -59,9 +58,9 @@ const handlers = [
     }
   ),
   rest.put(
-    `${apiUrl}/trackzilla/releases/0`,
+    `${apiUrl}/trackzilla/releases/1`,
     async (req, res, ctx) => {
-      return res(ctx.json(releaseData[0]));
+      return res(ctx.json(releaseData[1]));
     }
   ),
 ];

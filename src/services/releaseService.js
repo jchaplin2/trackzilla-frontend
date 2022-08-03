@@ -12,7 +12,7 @@ export function saveRelease(
     ? parseInt(release.id)
     : "";
   return fetch(baseUrl + releaseId, {
-    method: releaseId >= 0 ? "PUT" : "POST", // POST for create, PUT to update when id already exists.
+    method: Number.isInteger(releaseId) ? "PUT" : "POST", // POST for create, PUT to update when id already exists.
     headers: { "content-type": "application/json" },
     body: JSON.stringify(release),
   })

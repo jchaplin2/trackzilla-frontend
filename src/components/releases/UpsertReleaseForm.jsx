@@ -2,8 +2,15 @@ import React from "react";
 import { useState } from "react";
 import TextInput from "../common/TextInput";
 
+import { handleResponse, handleError } from "../../services/apiUtils";
+import {saveRelease} from "../../services/releaseService";
+import { useNavigate } from "react-router-dom";
+
+
 export const DESC_REQUIRED_MESSAGE = "Description is required."
 export const DATE_REQUIRED_MESSAGE = "Date is required.";
+
+
 
 export default function UpsertReleaseForm(props) {
 
@@ -11,6 +18,7 @@ export default function UpsertReleaseForm(props) {
     const dateFormatter = Intl.DateTimeFormat('sv-SE');
     const releaseDate = props.data.releaseDate ? props.data.releaseDate : dateFormatter.format(new Date());
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
     const id = Number(props.data.id) >= 0  ? Number(props.data.id): "";
     const [release, setRelease] = useState({
         id: id,
@@ -49,11 +57,10 @@ export default function UpsertReleaseForm(props) {
 
         setSaving(true);
         try {
-            props.onSubmit(release);
+            saveRelease(release, navigate, handleResponse, handleError);
         } catch(error) {
-            setErrors({ onSave: error.message });
-        } finally {
             setSaving(false);
+            setErrors({ onSave: error.message });
         }
 
         setRelease({

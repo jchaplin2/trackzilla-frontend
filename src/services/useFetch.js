@@ -8,6 +8,7 @@ export function useFetchWithRedux(url, actions, selector) {
     fetchError,
     fetchSuccess,
   } = actions;
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,7 +34,14 @@ export function useFetchWithRedux(url, actions, selector) {
     }
 
     init();
-  }, [url, dispatch]);
+  }, [
+    url,
+    dispatch,
+    fetchError,
+    fetchLoading,
+    fetchSuccess,
+  ]);
+  
   const reducer = useSelector((state) => state[selector]);
   return { reducer };
 }
