@@ -8,10 +8,11 @@ export function saveApplication(
   handleResponse,
   handleError
 ) {
-  let applicationId =
-    Number.isInteger(parseInt(application.id))
-      ? parseInt(application.id)
-      : "";
+  let applicationId = Number.isInteger(
+    parseInt(application.id, 10)
+  )
+    ? parseInt(application.id, 10)
+    : "";
   return fetch(baseUrl + applicationId, {
     method: Number.isInteger(applicationId)
       ? "PUT"

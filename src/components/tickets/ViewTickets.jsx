@@ -2,6 +2,7 @@ import React from "react";
 import { useFetchWithRedux } from "../../services/useFetch";
 import * as actions from "../../redux/actions/ticketActions";
 import Spinner from "../common/Spinner";
+import { Link } from "react-router-dom";
 
 export default function Tickets() {
     const { reducer } = useFetchWithRedux("/trackzilla/tickets", actions, 'ticketReducer');
@@ -27,10 +28,12 @@ export default function Tickets() {
 
             {data.map((item, i) => {
                 return (<tr key={i}>
-                    <td> {item.id}</td>
-                    <td> {item.title}</td>
-                    <td> {item.description}</td>
-                    <td >{item.application.name}</td>
+                    <td>
+                        <Link role="link" to={`/editticket/${i}`} >{item.id + 1}</Link>
+                    </td>
+                    <td> {item.ticketTitle}</td>
+                    <td> {item.ticketDesc}</td>
+                    <td >{item?.application?.applicationName}</td>
                     <td >{item?.release?.releaseDate}</td>
                 </tr>);
             })}

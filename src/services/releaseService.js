@@ -8,8 +8,8 @@ export function saveRelease(
   handleResponse,
   handleError
 ) {
-  let releaseId = Number.isInteger(parseInt(release.id))
-    ? parseInt(release.id)
+  let releaseId = Number.isInteger(parseInt(release.id, 10))
+    ? parseInt(release.id, 10)
     : "";
   return fetch(baseUrl + releaseId, {
     method: Number.isInteger(releaseId) ? "PUT" : "POST", // POST for create, PUT to update when id already exists.

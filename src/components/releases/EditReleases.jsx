@@ -16,10 +16,10 @@ export default function EditReleases() {
     if(error) throw error;
 
     return(
-        <div>
+        <>
             <h1>Edit Releases </h1>
 
             <UpsertReleaseForm data={dataItem} id={id} />
-        </div>
+        </>
     );
 }

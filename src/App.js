@@ -10,6 +10,7 @@ import EditReleases from "./components/releases/EditReleases";
 import CreateReleases from "./components/releases/CreateReleases";
 
 import ViewTickets from "./components/tickets/ViewTickets";
+import EditTickets from "./components/tickets/EditTickets";
 import CreateTickets from "./components/tickets/CreateTickets";
 
 import CreateApplications from "./components/application/CreateApplications";
@@ -42,6 +43,10 @@ function App() {
           <Route
             path="/viewtickets/"
             element={<ViewTickets />}
+          />
+          <Route
+            path="/editticket/:id"
+            element={<EditTickets />}
           />
           <Route
             path="/createrelease/"

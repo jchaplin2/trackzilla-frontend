@@ -1,13 +1,14 @@
 import React from "react";
-import * as actions from "../../redux/actions/applicationActions";
+import * as actions from "../../redux/actions/releaseActions";
 import Spinner from "../common/Spinner";
 import { useParams } from "react-router-dom";
 import { useFetchWithRedux } from "../../services/useFetch";
-import UpsertApplicationForm from "./UpsertApplicationForm";
+import UpsertTicketForm from "./UpsertTicketForm";
 
-export default function EditApplications() {
+export default function Tickets(props) {
+
     const { id } = useParams();
-    const { reducer } = useFetchWithRedux("/trackzilla/applications", actions, 'applicationReducer');
+    const { reducer } = useFetchWithRedux("/trackzilla/tickets", actions, 'ticketReducer');
     const { data, loading, error } = reducer;
     const dataItem = data[id];
     
@@ -16,10 +17,12 @@ export default function EditApplications() {
 
     return(
         <>
-            <h1>Edit Application </h1>
+            <h1>Edit Ticket</h1>
 
-            <UpsertApplicationForm data={dataItem} id={id} />
-
+            <UpsertTicketForm data={dataItem} id={id} />
         </>
-    );
+    );    
+
+
+
 }
