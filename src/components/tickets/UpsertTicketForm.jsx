@@ -5,7 +5,6 @@ import TextInput from "../common/TextInput";
 
 import {saveTicket} from "../../services/ticketService";
 import { handleResponse, handleError } from "../../services/apiUtils";
-// import AutoCompleteWithHiddenInput from "../common/AutoCompleteWithHiddenInput";
 import SelectInput from "../common/SelectInput";
 import AutoCompleteFetchInput from "../common/AutoCompleteFetchInput";
 
@@ -173,35 +172,6 @@ export default function UpsertTicketForm(props) {
                 errors={errors.releaseId}
             />
 
-            {/* <AutoCompleteWithHiddenInput
-                name="applicationName"
-                label="Application Name"
-                placeholder=""
-                value={ticket.application.applicationName}
-                displayColumns={['applicationName', 'applicationDesc']}
-                path="/trackzilla/applicationsByDesc?desc="
-                onChangeAutoComplete={handleApplicationChangeAutoComplete}
-                onKeyDownAutoComplete={handleApplicationKeyDown}
-                onClickAutoComplete={handleApplicationClickAutoComplete}
-                hiddenInputName="applicationId"
-                hiddenInputValue={ticket.application.id}
-                errors={errors.applicationId}
-            />
-
-            <AutoCompleteWithHiddenInput
-                name="releaseName"
-                label="Release Name"
-                placeholder=""
-                value={ticket.release.releaseName}
-                displayColumns={['releaseDate', 'releaseDesc']}
-                path="/trackzilla/releasesByDesc?desc="
-                onChangeAutoComplete={handleReleaseChangeAutoComplete}
-                onKeyDownAutoComplete={handleReleaseKeyDown}
-                onClickAutoComplete={handleReleaseClickAutoComplete}
-                hiddenInputName="releaseId"
-                hiddenInputValue={ticket.release.id}
-                errors={errors.releaseId}
-            /> */}
 
             <SelectInput
                 name="ticketStatus"

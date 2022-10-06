@@ -1,4 +1,4 @@
-import {render, screen, within} from '@testing-library/react';
+import {render, screen, waitFor, within} from '@testing-library/react';
 import React from 'react';
 import {MemoryRouter} from 'react-router-dom';
 import '@testing-library/jest-dom'
@@ -15,32 +15,40 @@ import thunk from "redux-thunk";
  * @group unit
  */
 
-describe("ViewReleases", () => {
+describe("ViewTickets", () => {
 
-    test('it navigates to view releases when clicked', () => {
+    const expectedNumberOfRows = 6;
+    //NOTE: for header row.
+
+    beforeEach(() => {
+        window.history.pushState({}, "viewtickets", "/viewtickets");
+
         const store = createStore(
             rootReducer,
             applyMiddleware(thunk)
         );
 
         render(
-            <Provider store={store}>
-                <MemoryRouter>
+            <Provider store={store} >
+                <MemoryRouter initialEntries={["/", "/viewtickets"]} basename="/">
                     <App/>
                 </MemoryRouter>
             </Provider>
         );
+    });
+
+    test('it navigates to view tickets when clicked', () => {
 
         const menuBar = screen.getByRole("menubar");
 
-        const releasesElement = within(menuBar).getByText(
+        const ticketsElement = within(menuBar).getByText(
           /Tickets/i
         );
-        releasesElement.dispatchEvent(new MouseEvent(
+        ticketsElement.dispatchEvent(new MouseEvent(
             "click", {bubbles:true}
         ));
 
-        const menu = screen.getByTestId('releases');
+        const menu = screen.getByTestId('tickets');
         const viewElement = within(menu).getByText(
           /View/i
         );
@@ -50,6 +58,13 @@ describe("ViewReleases", () => {
 
         expect(document.body.textContent).toContain("Tickets");
 
+    });
+
+    test('displays tickets from response', async () => {
+        await waitFor(() => {
+            const numberOfRows = screen.getAllByRole("row");
+            expect(numberOfRows.length).toEqual(expectedNumberOfRows);
+        });
     });
 });
 
