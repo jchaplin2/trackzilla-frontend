@@ -12,7 +12,9 @@ process.env.REACT_APP_BASE_API_URL =
 global.fetch = fetch;
 
 beforeAll(() => {
-  server.listen();
+  server.listen({
+    onUnhandledRequest: "warn",
+  });
 });
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());

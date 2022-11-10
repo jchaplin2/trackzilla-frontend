@@ -1,5 +1,5 @@
 import React from "react";
-import * as actions from "../../redux/actions/releaseActions";
+import * as actions from "../../redux/actions/ticketActions";
 import Spinner from "../common/Spinner";
 import { useParams } from "react-router-dom";
 import { useFetchWithRedux } from "../../services/useFetch";

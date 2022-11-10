@@ -1,4 +1,4 @@
-import {render, screen, waitFor, within} from '@testing-library/react';
+import {act, render, screen, waitFor, within} from '@testing-library/react';
 import React from 'react';
 import {MemoryRouter} from 'react-router-dom';
 import '@testing-library/jest-dom'
@@ -52,9 +52,12 @@ describe("ViewTickets", () => {
         const viewElement = within(menu).getByText(
           /View/i
         );
-        viewElement.dispatchEvent(new MouseEvent(
-            "click", {bubbles:true}
-        ));
+        act(() => {
+            viewElement.dispatchEvent(new MouseEvent(
+                "click", {bubbles:true}
+            ));
+        });
+
 
         expect(document.body.textContent).toContain("Tickets");
 

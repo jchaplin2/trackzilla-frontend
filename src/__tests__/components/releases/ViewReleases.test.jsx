@@ -1,4 +1,4 @@
-import {render, screen, waitFor, within} from '@testing-library/react';
+import {act, render, screen, waitFor, within} from '@testing-library/react';
 import React from 'react';
 
 import configureMockStore from "redux-mock-store";
@@ -55,9 +55,12 @@ describe("ViewReleases", () => {
         const viewElement = within(menu).getByText(
           /View/i
         );
-        viewElement.dispatchEvent(new MouseEvent(
-            "click", {bubbles:true}
-        ));
+        act(() => {
+            viewElement.dispatchEvent(new MouseEvent(
+                "click", {bubbles:true}
+            ));
+        });
+
 
         expect(document.body.textContent).toContain("Releases");
 

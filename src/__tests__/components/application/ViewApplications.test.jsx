@@ -1,11 +1,10 @@
-import {render, screen, waitFor, within} from '@testing-library/react';
+import {act, render, screen, waitFor, within} from '@testing-library/react';
 import React from 'react';
 
 import configureMockStore from "redux-mock-store";
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
 
 import { Provider } from "react-redux";
-import '@testing-library/jest-dom'
 import App from "../../../App";
 import { createStore, applyMiddleware } from "redux";
 import rootReducer from "../../../redux/reducers";
@@ -55,9 +54,11 @@ describe("ViewApplications", () => {
         const viewElement = within(menu).getByText(
           /View/i
         );
-        viewElement.dispatchEvent(new MouseEvent(
-            "click", {bubbles:true}
-        ));
+        act(() => {
+            viewElement.dispatchEvent(new MouseEvent(
+                "click", {bubbles:true}
+            ));
+        });
 
         expect(document.body.textContent).toContain("Applications");
     });

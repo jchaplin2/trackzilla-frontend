@@ -11,7 +11,7 @@ const AutoCompleteFetchInput = ({
     onKeyDownAutoComplete,
     path
 }) => {
-    const[autoCompleteData, setAutoCompleteData] = useState([]);
+    const [autoCompleteData, setAutoCompleteData] = useState([]);
 
     const handleAutoCompleteClick = (data) => {
         onClickAutoComplete(data);
@@ -20,24 +20,34 @@ const AutoCompleteFetchInput = ({
 
     const handleAutoCompleteChange = (event) => {
         onChangeAutoComplete(event);
-        fetchAutoCompleteData(event);
+      
+        const abortController = new AbortController();
+        fetchAutoCompleteData(event, abortController);
     };
 
-    const fetchAutoCompleteData = async (event) => {
+    const fetchAutoCompleteData = async (event, abortController) => {
         const {value} = event.target;
         if(value === "") {
             setAutoCompleteData([]);
             return;
         }
 
+        const {signal} = abortController;
         const baseUrl = process.env.REACT_APP_BASE_API_URL;
-        await fetch(baseUrl + path + value)
+        await fetch(baseUrl + path + value, {
+            method: 'GET',
+            signal: signal
+        }).catch(() => {
+            abortController.abort();
+        })
         .then((response) => {
             return response.json();
         })
         .then((data) => {
-            setAutoCompleteData(data);
-        })
+            if(signal.aborted === false) {
+                setAutoCompleteData(data);
+            }
+        });
     };
 
     const handleAutoCompleteKeyDown = (e) => {
