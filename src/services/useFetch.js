@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import AuthContext from "../store/auth-context";
 
 export function useFetchWithRedux(url, actions, selector) {
   const {
@@ -10,6 +11,7 @@ export function useFetchWithRedux(url, actions, selector) {
   } = actions;
 
   const dispatch = useDispatch();
+  const authCtx = useContext(AuthContext);
 
   useEffect(() => {
     async function init() {
@@ -18,6 +20,7 @@ export function useFetchWithRedux(url, actions, selector) {
       const options = {
         headers: new Headers({
           "content-type": "application/json",
+          Authorization: "Bearer " + authCtx.token,
         }),
       };
       await fetch(baseUrl + url, options)
@@ -40,8 +43,9 @@ export function useFetchWithRedux(url, actions, selector) {
     fetchError,
     fetchLoading,
     fetchSuccess,
+    authCtx.token,
   ]);
-  
+
   const reducer = useSelector((state) => state[selector]);
   return { reducer };
 }

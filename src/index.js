@@ -7,6 +7,7 @@ import thunk from "redux-thunk";
 import App from "./App";
 import rootReducer from "./redux/reducers";
 import { BrowserRouter } from "react-router-dom";
+import { AuthContextProvider } from "./store/auth-context";
 
 import ErrorBoundary from "./components/common/ErrorBoundary";
 
@@ -25,13 +26,15 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <ErrorBoundary>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ErrorBoundary>
-    </React.StrictMode>
-  </Provider>
+  <AuthContextProvider>
+    <BrowserRouter>
+      <Provider store={store}>
+        <React.StrictMode>
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
+        </React.StrictMode>
+      </Provider>
+    </BrowserRouter>
+  </AuthContextProvider>
 );
